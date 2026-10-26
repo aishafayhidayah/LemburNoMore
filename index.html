@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LemburNoMore – Fokus, istirahat, puas, pulang tepat waktu.</title>
+  <meta name="description" content="Timer Pomodoro dengan maskot kucing gembul. Fokus, istirahat, puas, pulang tepat waktu." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/cat-animations.css" />
+</head>
+<body class="theme-light">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="app-header">
+    <div class="header-logo">
+      <span class="logo-cat" aria-hidden="true">🐱</span>
+      <span class="logo-text">LemburNoMore</span>
+    </div>
+    <div class="header-controls">
+      <button id="btn-settings" class="icon-btn" aria-label="Pengaturan" title="Pengaturan">⚙️</button>
+      <button id="btn-stats" class="icon-btn header-stats-btn" aria-label="Statistik" title="Statistik">
+        📊<span id="header-session-badge" class="session-badge hidden" aria-label="Sesi hari ini">0</span>
+      </button>
+      <button id="btn-theme" class="icon-btn" aria-label="Ganti tema" title="Ganti tema gelap/terang">🌙</button>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="app-main">
+
+    <!-- Focus Mode Card -->
+    <div id="mode-card" class="mode-card">
+      <div id="mode-tabs" class="mode-tabs" role="tablist">
+        <button class="tab-btn active" data-mode="focus" role="tab" aria-selected="true">Fokus</button>
+        <button class="tab-btn" data-mode="short" role="tab" aria-selected="false">Istirahat Pendek</button>
+        <button class="tab-btn" data-mode="long" role="tab" aria-selected="false">Istirahat Panjang</button>
+      </div>
+
+      <!-- Session Info -->
+      <div class="session-info">
+        <span id="session-counter">Sesi ke-<strong>1</strong></span>
+        <span class="sep">·</span>
+        <span id="pomodoros-until-long">3 sesi lagi menuju istirahat panjang</span>
+      </div>
+
+      <!-- CAT STAGE -->
+      <div id="cat-stage" class="cat-stage" aria-hidden="true">
+        <div id="cat-container" class="cat-container">
+          <div id="cat" class="cat sit">
+            <!-- SVG Cat -->
+            <svg id="cat-svg" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" class="cat-svg">
+              <!-- Body -->
+              <ellipse id="cat-body" cx="60" cy="95" rx="36" ry="30" fill="#FF8C42"/>
+              <!-- Belly -->
+              <ellipse id="cat-belly" cx="60" cy="100" rx="22" ry="20" fill="#FFDBB5"/>
+              <!-- Head -->
+              <ellipse id="cat-head" cx="60" cy="55" rx="28" ry="26" fill="#FF8C42"/>
+              <!-- Left ear -->
+              <polygon id="cat-ear-l" points="35,36 28,12 50,30" fill="#FF8C42"/>
+              <polygon points="36,34 31,18 48,30" fill="#FFB38A"/>
+              <!-- Right ear -->
+              <polygon id="cat-ear-r" points="85,36 92,12 70,30" fill="#FF8C42"/>
+              <polygon points="84,34 89,18 72,30" fill="#FFB38A"/>
+              <!-- Left eye -->
+              <ellipse id="cat-eye-l" cx="48" cy="52" rx="7" ry="7" fill="#fff"/>
+              <ellipse id="cat-pupil-l" cx="49" cy="53" rx="4" ry="4" fill="#2d2d2d"/>
+              <circle cx="51" cy="51" r="1.5" fill="#fff" opacity="0.8"/>
+              <!-- Right eye -->
+              <ellipse id="cat-eye-r" cx="72" cy="52" rx="7" ry="7" fill="#fff"/>
+              <ellipse id="cat-pupil-r" cx="73" cy="53" rx="4" ry="4" fill="#2d2d2d"/>
+              <circle cx="75" cy="51" r="1.5" fill="#fff" opacity="0.8"/>
+              <!-- Nose -->
+              <ellipse cx="60" cy="61" rx="3" ry="2" fill="#FF6B9D"/>
+              <!-- Mouth -->
+              <path d="M57 63 Q60 67 63 63" stroke="#2d2d2d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <!-- Whiskers left -->
+              <line x1="30" y1="60" x2="52" y2="61" stroke="#2d2d2d" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="63" x2="52" y2="63" stroke="#2d2d2d" stroke-width="1" opacity="0.5"/>
+              <line x1="32" y1="66" x2="52" y2="65" stroke="#2d2d2d" stroke-width="1" opacity="0.5"/>
+              <!-- Whiskers right -->
+              <line x1="90" y1="60" x2="68" y2="61" stroke="#2d2d2d" stroke-width="1" opacity="0.5"/>
+              <line x1="90" y1="63" x2="68" y2="63" stroke="#2d2d2d" stroke-width="1" opacity="0.5"/>
+              <line x1="88" y1="66" x2="68" y2="65" stroke="#2d2d2d" stroke-width="1" opacity="0.5"/>
+              <!-- Tail -->
+              <path id="cat-tail" d="M96 110 Q115 95 108 75 Q103 62 112 55" stroke="#FF8C42" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <!-- Front paws -->
+              <ellipse id="cat-paw-l" cx="44" cy="122" rx="10" ry="7" fill="#FF8C42"/>
+              <ellipse id="cat-paw-r" cx="76" cy="122" rx="10" ry="7" fill="#FF8C42"/>
+              <!-- Stripes -->
+              <path d="M45 42 Q50 38 55 42" stroke="#E07030" stroke-width="2" fill="none" opacity="0.6"/>
+              <path d="M55 38 Q60 34 65 38" stroke="#E07030" stroke-width="2" fill="none" opacity="0.6"/>
+              <path d="M65 42 Q70 38 75 42" stroke="#E07030" stroke-width="2" fill="none" opacity="0.6"/>
+            </svg>
+          </div>
+          <!-- Speech bubble -->
+          <div id="speech-bubble" class="speech-bubble hidden" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- TIMER DISPLAY -->
+      <div class="timer-wrapper">
+        <div class="timer-progress-ring" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Progres waktu">
+          <svg id="progress-svg" viewBox="0 0 120 120" class="progress-svg">
+            <circle class="progress-bg" cx="60" cy="60" r="54"/>
+            <circle id="progress-circle" class="progress-fill" cx="60" cy="60" r="54"/>
+          </svg>
+          <div class="timer-display">
+            <div id="timer-time" class="timer-time" title="Klik untuk ubah durasi" tabindex="0" role="button" aria-label="Klik untuk edit durasi">00:25:00</div>
+            <input id="timer-time-input" class="timer-time-input hidden" type="text" inputmode="numeric" aria-label="Durasi dalam menit" />
+            <span id="timer-edit-hint" class="timer-edit-hint hidden">Enter=Simpan · Esc=Batal</span>
+            <div id="timer-label" class="timer-label">Fokus</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMER CONTROLS -->
+      <div class="timer-controls">
+        <button id="btn-start" class="btn-primary btn-large" aria-label="Mulai timer">Mulai</button>
+        <button id="btn-reset" class="btn-secondary" aria-label="Reset timer" title="Reset (R)">↺</button>
+        <button id="btn-skip" class="btn-secondary" aria-label="Lewati sesi" title="Lewati sesi">⏭</button>
+      </div>
+
+      <!-- KEYBOARD HINTS -->
+      <div class="keyboard-hints" aria-label="Pintasan keyboard">
+        <span>Spasi=Mulai/Jeda</span>
+        <span>R=Reset</span>
+        <span>M=Bisu</span>
+      </div>
+
+      <!-- DAILY TIPS -->
+      <div id="daily-tip" class="daily-tip" role="note" aria-live="polite"></div>
+
+    </div><!-- /mode-card -->
+
+  </main><!-- /main -->
+
+  <!-- ===================== BREAK OVERLAY ===================== -->
+  <div id="break-overlay" class="break-overlay hidden" role="dialog" aria-modal="true" aria-label="Waktunya istirahat">
+    <div class="break-content">
+      <div id="break-cat" class="break-cat" aria-hidden="true">
+        <!-- Animated break cat rendered by CSS -->
+        <div class="break-cat-anim"></div>
+      </div>
+      <h2 id="break-title" class="break-title">Waktunya istirahat!</h2>
+      <p id="break-message" class="break-message">Jauhkan mata dari layar, regangkan badan, minum air.</p>
+      <div id="break-timer-display" class="break-timer-display">05:00</div>
+      <button id="btn-skip-break" class="btn-skip-break-hold" aria-label="Tahan untuk lewati istirahat">
+        <svg class="skip-progress-ring" viewBox="0 0 44 44" aria-hidden="true">
+          <circle class="skip-ring-bg" cx="22" cy="22" r="19"/>
+          <circle id="skip-ring-fill" class="skip-ring-fill" cx="22" cy="22" r="19"/>
+        </svg>
+        <span class="skip-btn-label">Tahan untuk skip</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== SETTINGS PANEL ===================== -->
+  <div id="settings-panel" class="panel hidden" role="dialog" aria-modal="true" aria-label="Pengaturan">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <h2>Pengaturan</h2>
+        <button class="icon-btn panel-close" data-panel="settings" aria-label="Tutup">✕</button>
+      </div>
+      <div class="panel-body">
+        <div class="quick-presets">
+          <span class="quick-presets-label">Preset cepat (untuk tes):</span>
+          <div class="quick-presets-btns">
+            <button class="preset-btn" data-focus="1" data-short="1" data-long="2">1/1/2 mnt</button>
+            <button class="preset-btn" data-focus="5" data-short="2" data-long="5">5/2/5 mnt</button>
+            <button class="preset-btn" data-focus="25" data-short="5" data-long="15">25/5/15 mnt</button>
+          </div>
+        </div>
+        <label class="setting-row">
+          <span>Durasi Fokus (menit)</span>
+          <input type="number" id="set-focus" min="1" max="600" value="25" class="num-input" />
+        </label>
+        <label class="setting-row">
+          <span>Istirahat Pendek (menit)</span>
+          <input type="number" id="set-short" min="1" max="30" value="5" class="num-input" />
+        </label>
+        <label class="setting-row">
+          <span>Istirahat Panjang (menit)</span>
+          <input type="number" id="set-long" min="1" max="60" value="15" class="num-input" />
+        </label>
+        <label class="setting-row">
+          <span>Jumlah sesi sebelum istirahat panjang</span>
+          <input type="number" id="set-long-interval" min="2" max="10" value="4" class="num-input" />
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Auto-start fase berikutnya</span>
+          <input type="checkbox" id="set-auto-start" class="toggle-input" role="switch" />
+          <span class="toggle-track" aria-hidden="true"></span>
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Notifikasi browser</span>
+          <input type="checkbox" id="set-notifications" class="toggle-input" role="switch" />
+          <span class="toggle-track" aria-hidden="true"></span>
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Suara notifikasi</span>
+          <input type="checkbox" id="set-sound" class="toggle-input" role="switch" checked />
+          <span class="toggle-track" aria-hidden="true"></span>
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Fullscreen saat istirahat</span>
+          <input type="checkbox" id="set-fullscreen" class="toggle-input" role="switch" />
+          <span class="toggle-track" aria-hidden="true"></span>
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Tampilkan kucing saat fokus</span>
+          <input type="checkbox" id="set-show-cat" class="toggle-input" role="switch" checked />
+          <span class="toggle-track" aria-hidden="true"></span>
+        </label>
+        <label class="setting-row">
+          <span>Jam Pulang (opsional)</span>
+          <input type="time" id="set-jam-pulang" class="time-input" />
+        </label>
+        <label class="setting-row">
+          <span>Batas sesi per hari (opsional)</span>
+          <input type="number" id="set-daily-limit" min="0" max="20" value="0" class="num-input" placeholder="0 = tanpa batas" />
+        </label>
+        <button id="btn-save-settings" class="btn-primary" style="margin-top:1rem;width:100%">Simpan Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== STATS PANEL ===================== -->
+  <div id="stats-panel" class="panel hidden" role="dialog" aria-modal="true" aria-label="Statistik">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <h2>Statistik</h2>
+        <button class="icon-btn panel-close" data-panel="stats" aria-label="Tutup">✕</button>
+      </div>
+      <div class="panel-body">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-today-sessions">0</div>
+            <div class="stat-label">Sesi hari ini</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-today-focus">0</div>
+            <div class="stat-label">Total fokus (menit)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-week-sessions">0</div>
+            <div class="stat-label">Sesi 7 hari terakhir</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-streak">0</div>
+            <div class="stat-label">Hari streak</div>
+          </div>
+        </div>
+        <div id="stats-chart" class="stats-chart" aria-label="Grafik sesi per hari">
+          <!-- Rendered by JS -->
+        </div>
+        <button id="btn-clear-stats" class="btn-danger" style="margin-top:1.5rem;width:100%">Hapus semua data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PANEL BACKDROP ===================== -->
+  <div id="panel-backdrop" class="panel-backdrop hidden"></div>
+
+  <!-- SCRIPTS — app.js imports all other modules -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
